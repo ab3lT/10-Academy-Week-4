@@ -1,6 +1,7 @@
 # Rossmann Pharmaceuticals: Sales Forecasting Challenge (10 Academy Week 4)
 
 ## Overview
+
 As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with creating an end-to-end solution to forecast store sales six weeks in advance. This solution will empower the finance team and store managers to make data-driven decisions by considering factors like promotions, competition, holidays, seasonality, and locality.
 
 ---
@@ -8,6 +9,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 ## Key Tasks
 
 ### Task 1: **Exploration of Customer Purchasing Behavior**
+
 1. **Objective:** Understand and analyze the impact of various factors on sales, including promotions, holidays, and assortment types.
 2. **Steps:**
    - Clean the data (handle outliers, missing values, and inconsistencies).
@@ -18,6 +20,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
    - Logger-based implementation for reproducibility.
 
 ### Task 2: **Prediction of Store Sales**
+
 1. **Objective:** Build a machine learning model to forecast daily store sales.
 2. **Steps:**
    - **Preprocessing:** Feature engineering and scaling.
@@ -30,6 +33,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
    - Jupyter notebook with ML and deep learning implementation.
 
 ### Task 3: **Model Serving API**
+
 1. **Objective:** Serve the trained models via a REST API.
 2. **Steps:**
    - Develop an API using Flask or FastAPI.
@@ -44,6 +48,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 ## Learning Outcomes
 
 ### Skills
+
 - Advanced use of **scikit-learn**.
 - Feature engineering, model building, and fine-tuning.
 - Logging, unit testing, and CI/CD deployment.
@@ -51,6 +56,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 - Dashboard creation and Python-based API development.
 
 ### Knowledge
+
 - Data exploration and predictive analysis.
 - Hyperparameter tuning, model comparison, and deep learning.
 - Communication of insights and reporting complex findings.
@@ -58,6 +64,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 ---
 
 ## Tutorials Schedule
+
 - **Wednesday:** Data exploration and time-series analysis. *(Tutors: Mahlet, Elias)*
 - **Thursday:** Predictive ML and model versioning. *(Tutors: Rediet, Emitinan)*
 - **Friday:** Deep Learning (LSTM). *(Tutor: Kerod)*
@@ -66,6 +73,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 ---
 
 ## Key Dates
+
 - **Case Discussion:** Wednesday, 01 Jan 2025, 09:00 UTC.
 - **Interim Submission:** Friday, 03 Jan 2025, 20:00 UTC.
 - **Final Submission:** Tuesday, 14 Jan 2025, 20:00 UTC.
@@ -73,6 +81,7 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 ---
 
 ## Competency Mapping
+
 | Competency                   | Contribution Areas                                              |
 |------------------------------|-----------------------------------------------------------------|
 | Professionalism              | Articulating business values                                   |
@@ -90,10 +99,12 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 ## Submission Requirements
 
 ### Interim Submission
+
 - Exploratory analysis insights in 10-20 slides.
 - Link to GitHub repository containing Jupyter notebooks.
 
 ### Final Submission
+
 - A detailed PDF report suitable for blogging.
 - Focus on deep learning models.
 - Link to GitHub repository with all code and implementation details.
@@ -101,14 +112,12 @@ As a Machine Learning Engineer at Rossmann Pharmaceuticals, you are tasked with 
 ---
 
 ## References
+
 - [Rossmann Store Sales Dataset](https://www.kaggle.com/c/rossmann-store-sales)
 - [Time-series forecasting with LSTMs](https://machinelearningmastery.com/time-series-forecasting-with-lstms/)
 - [MLOps with DVC](https://dvc.org/)
 - Tutorials on Flask, scikit-learn pipelines, and more.
 
 ---
-
-### Tutors
-- **Mahlet**, **Elias**, **Rediet**, **Kerod**, **Emitinan**, **Rehmet**
 
 Let’s tackle this challenge and create an impactful sales forecasting solution!
