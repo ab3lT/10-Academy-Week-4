@@ -153,7 +153,6 @@ class Visualyzer:
     def plot_promo_impact(self):
         """
         Plots the impact of promotions on average sales and customer counts.
-
         Parameters:
         train_data (DataFrame): The input dataframe containing promotional and sales data.
         """
@@ -163,43 +162,33 @@ class Visualyzer:
         # Ensure that 'Promo' and 'Promo2' are of correct type
         df['Promo'] = df['Promo'].astype(bool)
         df['Promo2'] = df['Promo2'].astype(bool)
-
         # Calculate average sales and customer counts
         promo_sales_avg = df[df['Promo']]['Sales'].mean()
         non_promo_sales_avg = df[~df['Promo']]['Sales'].mean()
-
         promo2_sales_avg = df[df['Promo2']]['Sales'].mean()
         non_promo2_sales_avg = df[~df['Promo2']]['Sales'].mean()
-
         promo_customers_avg = df[df['Promo']]['Customers'].mean()
         non_promo_customers_avg = df[~df['Promo']]['Customers'].mean()
-
         promo2_customers_avg = df[df['Promo2']]['Customers'].mean()
         non_promo2_customers_avg = df[~df['Promo2']]['Customers'].mean()
-
         # Bar charts
         fig, axs = plt.subplots(2, 2, figsize=(12, 6))
-
         # Sales for Promo
         axs[0, 0].bar(['Promo', 'Non-Promo'], [promo_sales_avg, non_promo_sales_avg], color=['blue', 'orange'])
         axs[0, 0].set_title('Average Sales: Promo vs Non-Promo')
         axs[0, 0].set_ylabel('Average Sales')
-
         # Sales for Promo2
         axs[0, 1].bar(['Promo2', 'Non-Promo2'], [promo2_sales_avg, non_promo2_sales_avg], color=['green', 'red'])
         axs[0, 1].set_title('Average Sales: Promo2 vs Non-Promo2')
         axs[0, 1].set_ylabel('Average Sales')
-
         # Customer Counts for Promo
         axs[1, 0].bar(['Promo', 'Non-Promo'], [promo_customers_avg, non_promo_customers_avg], color=['blue', 'orange'])
         axs[1, 0].set_title('Average Customer Count: Promo vs Non-Promo')
         axs[1, 0].set_ylabel('Average Customer Count')
-
         # Customer Counts for Promo2
         axs[1, 1].bar(['Promo2', 'Non-Promo2'], [promo2_customers_avg, non_promo2_customers_avg], color=['green', 'red'])
         axs[1, 1].set_title('Average Customer Count: Promo2 vs Non-Promo2')
         axs[1, 1].set_ylabel('Average Customer Count')
-
         plt.tight_layout()
         plt.show()
     
@@ -281,4 +270,40 @@ class Visualyzer:
         plt.title('Customer Behavior Trends: Open vs Closed by Day of the Week')
         fig.tight_layout()
         plt.legend(loc='upper left', bbox_to_anchor=(0.1,0.9))
+        plt.show()
+        
+    def plot_assortment_sales(self):
+        data = self.train_data.copy()
+        # Map assortment types
+        assortment_mapping = {
+            'a': 'Basic',
+            'b': 'Extra',
+            'c': 'Extended'
+        }
+        data['AssortmentType'] = data['Assortment'].map(assortment_mapping)
+        
+        # Filter data for weekdays and weekends
+        weekday_data = data[data['DayOfWeek'] <= 5]
+        weekend_data = data[data['DayOfWeek'] >= 6]
+        
+        # Calculate average sales for each assortment type
+        weekday_sales = weekday_data.groupby('AssortmentType')['Sales'].mean().reset_index()
+        weekend_sales = weekend_data.groupby('AssortmentType')['Sales'].mean().reset_index()
+        
+        # Plotting
+        fig, ax = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
+        
+        # Weekday Sales Plot
+        sns.barplot(x='AssortmentType', y='Sales', data=weekday_sales, hue='AssortmentType', ax=ax[0], palette='viridis', dodge=False)
+        ax[0].set_title('Average Weekday Sales by Assortment Type')
+        ax[0].set_xlabel('Assortment Type')
+        ax[0].set_ylabel('Average Sales')
+        
+        # Weekend Sales Plot
+        sns.barplot(x='AssortmentType', y='Sales', data=weekend_sales, hue='AssortmentType', ax=ax[1], palette='viridis', dodge=False)
+        ax[1].set_title('Average Weekend Sales by Assortment Type')
+        ax[1].set_xlabel('Assortment Type')
+        ax[1].set_ylabel('Average Sales')
+        
+        plt.tight_layout()
         plt.show()
