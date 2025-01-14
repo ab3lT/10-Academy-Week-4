@@ -1,105 +1,62 @@
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
-class DataProcessing:
+def load_data(file_path):
+    data = pd.read_csv(file_path)
+    data['Date'] = pd.to_datetime(data['Date'], errors='coerce')
+    return data
+
+def extract_features(data):
+    if not pd.api.types.is_datetime64_any_dtype(data['Date']):
+        raise ValueError("The 'Date' column must be in datetime format.")
     
-    def __init__(self, data: pd.DataFrame):
-        """
-        Initialize the DataProcessing class with the data.
+    data['Weekday'] = data['Date'].dt.weekday
+    data['IsWeekend'] = data['Weekday'].apply(lambda x: 1 if x >= 5 else 0)
 
-        Args:
-            data (pd.DataFrame): The input DataFrame to process.
-        """
-        self.data = data
+    # Assuming a predefined list of holidays
+    holidays = pd.to_datetime(['2022-01-01', '2022-12-25'])  # Add all relevant holidays
+    data['DaysToHoliday'] = data['Date'].apply(
+        lambda x: min((holiday - x).days for holiday in holidays if (holiday - x).days > 0)
+        if any((holiday - x).days > 0 for holiday in holidays) else 0
+    )
+    data['DaysAfterHoliday'] = data['Date'].apply(
+        lambda x: min((x - holiday).days for holiday in holidays if (x - holiday).days > 0)
+        if any((x - holiday).days > 0 for holiday in holidays) else 0
+    )
+
+    data['BeginningOfMonth'] = data['Date'].dt.day <= 10
+    data['MidMonth'] = data['Date'].dt.day.between(11, 20)
+    data['EndOfMonth'] = data['Date'].dt.day > 20
+    data['Season'] = data['Date'].dt.month % 12 // 3 + 1  # 1: Winter, 2: Spring, etc.
+
+    return data
+
+def handle_missing_values(data):
+    if data['Date'].isnull().any():
+        print("Warning: There are invalid date entries in the dataset.")
+    return data.fillna(method='ffill')
+
+def convert_categorical(data):
+    # Handle StateHoliday mapping
+    data['StateHoliday'] = data['StateHoliday'].astype(str)
+    state_holiday_mapping = {'0': 0, 'a': 1, 'b': 2, 'c': 3}
+    data['StateHoliday'] = data['StateHoliday'].map(state_holiday_mapping)
+    data['StateHoliday'].fillna(0, inplace=True)
+
+    # Convert other categorical variables to numeric using one-hot encoding
+    categorical_columns = ['SchoolHoliday']  # Add other categorical columns if needed
+    data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
     
+    return data
 
-    def missing_data_summary(self) -> pd.DataFrame:
-        """
-        Returns a summary of columns with missing data, including count and percentage of missing values.
+def scale_features(data, feature_columns):
+    scaler = StandardScaler()
+    # Ensure all feature columns are numeric
+    data[feature_columns] = scaler.fit_transform(data[feature_columns])
+    return data
 
-        Returns:
-            pd.DataFrame: A DataFrame with columns 'Missing Count' and 'Percentage (%)' for columns with missing values.
-        """
-        # Total missing values per column
-        missing_data = self.data.isnull().sum()
-        
-        # Filter only columns with missing values greater than 0
-        missing_data = missing_data[missing_data > 0]
-        
-        # Calculate the percentage of missing data
-        missing_percentage = (missing_data / len(self.data)) * 100
-        
-        # Combine the counts and percentages into a DataFrame
-        missing_df = pd.DataFrame({
-            'Missing Count': missing_data, 
-            'Percentage (%)': missing_percentage
-        })
-        
-        # Sort by percentage of missing data
-        missing_df = missing_df.sort_values(by='Percentage (%)', ascending=False)
-        
-        return missing_df
-
-   
-    def check_data_types(train_data, test_data):
-        """
-        Function to check and compare the data types of columns in both training and test datasets.
-        
-        Args:
-        train_data (pd.DataFrame): The training dataset.
-        test_data (pd.DataFrame): The test dataset.
-        
-        Returns:
-        None
-        """
-        # Check data types of the training dataset
-        print("Training Dataset Data Types:\n")
-        print(train_data.dtypes)
-        print("\n" + "="*50 + "\n")
-        
-        # Check data types of the test dataset
-        print("Test Dataset Data Types:\n")
-        print(test_data.dtypes)
-        print("\n" + "="*50 + "\n")
-        
-        # Check for differences in column names and data types
-        print("Differences in column names and data types between training and test datasets:\n")
-        train_dtypes = train_data.dtypes
-        test_dtypes = test_data.dtypes
-        
-        for column in train_dtypes.index:
-            if column in test_dtypes.index:
-                if train_dtypes[column] != test_dtypes[column]:
-                    print(f"Data type mismatch for column '{column}':")
-                    print(f"Train: {train_dtypes[column]}, Test: {test_dtypes[column]}")
-                    print("-" * 50)
-            else:
-                print(f"Column '{column}' is present in training data but missing in test data.")
-        
-        for column in test_dtypes.index:
-            if column not in train_dtypes.index:
-                print(f"Column '{column}' is present in test data but missing in training data.")
-    
-    def convert_state_holiday(df):
-        """
-        Convert the 'StateHoliday' column to a consistent numeric format.
-        
-        Args:
-            df (pd.DataFrame): The DataFrame containing the 'StateHoliday' column.
-        
-        Returns:
-            pd.DataFrame: DataFrame with 'StateHoliday' column converted to numeric categories.
-        """
-        # Convert the entire 'StateHoliday' column to string
-        df['StateHoliday'] = df['StateHoliday'].astype(str)
-        # Define the mapping for categorical values
-        holiday_mapping = {
-            'a': 1,  # Public holiday
-            'b': 2,  # Easter holiday
-            'c': 3,  # Christmas
-            '0': 0   # No holiday
-        }
-        
-        # Convert 'StateHoliday' column using the mapping
-        df['StateHoliday'] = df['StateHoliday'].map(holiday_mapping).astype(int)
-        
-        return df
+def split_data(data, feature_columns, target_column):
+    from sklearn.model_selection import train_test_split
+    X = data[feature_columns]
+    y = data[target_column]
+    return train_test_split(X, y, test_size=0.2, random_state=42)
