@@ -1,7 +1,7 @@
 import numpy as np
 from statsmodels.tsa.stattools import adfuller
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
+from keras.models import Sequential
+from keras.layers import LSTM, Dense
 
 def prepare_time_series(data):
     data = data.set_index('Date').resample('D').sum().fillna(0)
